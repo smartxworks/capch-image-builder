@@ -14,7 +14,7 @@ RUN apt-get update -y && \
     apt-get install -y --no-install-recommends containerd.io && \
     rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /etc/containerd && containerd config default > /etc/containerd/config.toml
+RUN mkdir -p /etc/containerd && containerd config default | sed 's/SystemdCgroup = false/SystemdCgroup = true/' > /etc/containerd/config.toml
 RUN systemctl enable containerd
 
 RUN curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg && \

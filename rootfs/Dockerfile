@@ -26,7 +26,7 @@ RUN apt-get update -y && \
 
 RUN systemctl enable kubelet
 
-FROM smartxworks/kubrid-container-rootfs-base
+FROM smartxworks/virtink-container-rootfs-base
 
 COPY --from=rootfs / /rootfs
 RUN ln -sf ../run/systemd/resolve/stub-resolv.conf /rootfs/etc/resolv.conf

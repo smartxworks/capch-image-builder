@@ -30,3 +30,9 @@ FROM smartxworks/virtink-container-rootfs-base
 
 COPY --from=rootfs / /rootfs
 RUN ln -sf ../run/systemd/resolve/stub-resolv.conf /rootfs/etc/resolv.conf
+RUN echo -e "127.0.0.1 localhost \n\
+::1     localhost ip6-localhost ip6-loopback \n\
+fe00::0 ip6-localnet \n\
+fe00::0 ip6-mcastprefix \n\
+fe00::1 ip6-allnodes \n\
+fe00::2 ip6-allrouters" > /rootfs/etc/hosts

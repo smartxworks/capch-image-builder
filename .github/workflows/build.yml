@@ -23,10 +23,12 @@ jobs:
         with:
           file: kernel/Dockerfile
           tags: smartxworks/capch-kernel-5.15.12
+          platforms: linux/amd64,linux/arm64
           push: true
 
       - uses: docker/build-push-action@v2
         with:
           file: rootfs/Dockerfile
           tags: smartxworks/capch-rootfs-1.24.0
+          platforms: linux/amd64,linux/arm64
           push: true

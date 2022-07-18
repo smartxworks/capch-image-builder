@@ -1,4 +1,4 @@
-# Image Builder for Cluster API Provider VirTink
+# Image Builder for Cluster API Provider Virtink
 
 ## License
 

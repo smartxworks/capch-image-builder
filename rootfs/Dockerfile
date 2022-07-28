@@ -26,6 +26,8 @@ RUN apt-get update -y && \
 
 RUN systemctl enable kubelet
 
+RUN echo 'net.ipv4.conf.lxc*.rp_filter = 0' > /etc/sysctl.d/99-override_cilium_rp_filter.conf
+
 FROM smartxworks/virtink-container-rootfs-base
 
 COPY --from=rootfs / /rootfs

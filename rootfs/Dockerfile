@@ -28,7 +28,7 @@ RUN systemctl enable kubelet
 
 RUN echo 'net.ipv4.conf.lxc*.rp_filter = 0' > /etc/sysctl.d/99-override_cilium_rp_filter.conf
 
-FROM smartxworks/virtink-container-rootfs-base
+FROM smartxworks/virtink-container-rootfs-base AS virtink-container-rootfs
 
 COPY --from=rootfs / /rootfs
 RUN ln -sf ../run/systemd/resolve/stub-resolv.conf /rootfs/etc/resolv.conf
@@ -38,3 +38,12 @@ fe00::0 ip6-localnet \n\
 fe00::0 ip6-mcastprefix \n\
 fe00::1 ip6-allnodes \n\
 fe00::2 ip6-allrouters" > /rootfs/etc/hosts
+
+FROM virtink-container-rootfs AS qcow2-rootfs
+RUN apk add qemu-img
+RUN /entrypoint.sh /rootfs.raw 2G
+RUN qemu-img convert -f raw -O qcow2 /rootfs.raw rootfs.qcow2
+
+FROM kubevirt/container-disk-v1alpha
+
+COPY --from=qcow2-rootfs /rootfs.qcow2 /disk/rootfs.qcow2

@@ -1,5 +1,7 @@
 FROM ubuntu:jammy AS rootfs
 
+ARG KUBERNETES_VERSION
+
 RUN apt-get update -y && \
     apt-get install -y --no-install-recommends systemd-sysv udev lsb-release cloud-init sudo curl gnupg && \
     rm -rf /var/lib/apt/lists/*
@@ -20,7 +22,7 @@ RUN systemctl enable containerd
 RUN curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list
 RUN apt-get update -y && \
-    apt-get install -y --no-install-recommends kubelet=1.24.0-00 kubeadm=1.24.0-00 kubectl=1.24.0-00 && \
+    apt-get install -y --no-install-recommends kubelet=$KUBERNETES_VERSION-00 kubeadm=$KUBERNETES_VERSION-00 kubectl=$KUBERNETES_VERSION-00 && \
     rm -rf /var/lib/apt/lists/* && \
     apt-mark hold kubelet kubeadm kubectl
 
@@ -30,7 +32,11 @@ RUN echo 'net.ipv4.conf.lxc*.rp_filter = 0' > /etc/sysctl.d/99-override_cilium_r
 
 FROM smartxworks/virtink-container-rootfs-base AS virtink-container-rootfs
 
+ARG KUBERNETES_VERSION
+
 COPY --from=rootfs / /rootfs
+COPY rootfs/images-$KUBERNETES_VERSION.tar /rootfs/usr/share/capch/images.tar
+
 RUN ln -sf ../run/systemd/resolve/stub-resolv.conf /rootfs/etc/resolv.conf
 RUN echo -e "127.0.0.1 localhost \n\
 ::1     localhost ip6-localhost ip6-loopback \n\

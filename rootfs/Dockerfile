@@ -33,9 +33,10 @@ RUN echo 'net.ipv4.conf.lxc*.rp_filter = 0' > /etc/sysctl.d/99-override_cilium_r
 FROM smartxworks/virtink-container-rootfs-base AS virtink-container-rootfs
 
 ARG KUBERNETES_VERSION
+ARG TARGETPLATFORM
 
 COPY --from=rootfs / /rootfs
-COPY rootfs/images-$KUBERNETES_VERSION.tar /rootfs/usr/share/capch/images.tar
+COPY rootfs/$TARGETPLATFORM/images-$KUBERNETES_VERSION.tar /rootfs/usr/share/capch/images.tar
 
 RUN ln -sf ../run/systemd/resolve/stub-resolv.conf /rootfs/etc/resolv.conf
 RUN echo -e "127.0.0.1 localhost \n\

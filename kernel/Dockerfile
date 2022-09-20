@@ -1,11 +1,13 @@
 FROM fedora:35 AS builder
 
+ARG KERNEL_VERSION
+
 RUN yum install -y git gcc flex bison diffutils elfutils-libelf-devel bc && \
     yum clean all
 
 WORKDIR /workspace
 
-RUN git clone --depth 1 https://github.com/cloud-hypervisor/linux.git -b ch-5.15.12 linux-cloud-hypervisor
+RUN git clone --depth 1 https://github.com/cloud-hypervisor/linux.git -b ch-$KERNEL_VERSION linux-cloud-hypervisor
 COPY kernel/linux-config-* linux-cloud-hypervisor/
 RUN set -eux; \
     cd linux-cloud-hypervisor; \

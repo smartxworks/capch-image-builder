@@ -3,7 +3,7 @@ FROM ubuntu:jammy AS rootfs
 ARG KUBERNETES_VERSION
 
 RUN apt-get update -y && \
-    apt-get install -y --no-install-recommends systemd-sysv udev lsb-release cloud-init sudo curl gnupg && \
+    apt-get install -y --no-install-recommends systemd-sysv udev lsb-release cloud-init sudo curl gnupg skopeo && \
     rm -rf /var/lib/apt/lists/*
 
 RUN echo "net.bridge.bridge-nf-call-iptables  = 1 \n\
@@ -30,13 +30,15 @@ RUN systemctl enable kubelet
 
 RUN echo 'net.ipv4.conf.lxc*.rp_filter = 0' > /etc/sysctl.d/99-override_cilium_rp_filter.conf
 
+RUN mkdir -p /usr/share/capch/images && \
+    images=$(kubeadm config images list --kubernetes-version $KUBERNETES_VERSION) && \
+    for image in $images; do \
+        skopeo copy docker://$image oci-archive:/usr/share/capch/images/$(echo $image | sed -r 's/[/:]/_/g').tar:$image; \
+    done
+
 FROM smartxworks/virtink-container-rootfs-base AS virtink-container-rootfs
 
-ARG KUBERNETES_VERSION
-ARG TARGETPLATFORM
-
 COPY --from=rootfs / /rootfs
-COPY rootfs/$TARGETPLATFORM/images-$KUBERNETES_VERSION.tar /rootfs/usr/share/capch/images.tar
 
 RUN ln -sf ../run/systemd/resolve/stub-resolv.conf /rootfs/etc/resolv.conf
 RUN echo -e "127.0.0.1 localhost \n\

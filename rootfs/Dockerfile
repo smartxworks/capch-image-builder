@@ -36,6 +36,9 @@ RUN mkdir -p /usr/share/capch/images && \
         skopeo copy docker://$image oci-archive:/usr/share/capch/images/$(echo $image | sed -r 's/[/:]/_/g').tar:$image; \
     done
 
+RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
+    update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+
 FROM smartxworks/virtink-container-rootfs-base AS virtink-container-rootfs
 
 COPY --from=rootfs / /rootfs

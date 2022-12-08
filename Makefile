@@ -21,8 +21,8 @@ push-rootfs:
 
 .PHONY: push-disk
 push-disk:
-	docker buildx build --build-arg "ARCH=amd64" --build-arg PACKER_GITHUB_API_TOKEN=$(PACKER_GITHUB_API_TOKEN) --build-arg KUBERNETES_VERSION=$(KUBERNETES_VERSION) --build-arg SUDO_PASSWORD=$(CAPCH_DISK_SUDO_PASSWORD) -f disk/Dockerfile.builder -o disk/out/x86_64 .
-	docker buildx build --build-arg "ARCH=arm64" --build-arg PACKER_GITHUB_API_TOKEN=$(PACKER_GITHUB_API_TOKEN) --build-arg KUBERNETES_VERSION=$(KUBERNETES_VERSION) --build-arg SUDO_PASSWORD=$(CAPCH_DISK_SUDO_PASSWORD) -f disk/Dockerfile.builder -o disk/out/aarch64 .
+	docker buildx build --build-arg "ARCH=amd64" --build-arg PACKER_GITHUB_API_TOKEN=$(PACKER_GITHUB_API_TOKEN) --build-arg KUBERNETES_VERSION=$(KUBERNETES_VERSION) --build-arg SUDO_PASSWORD=$(CAPCH_DISK_SUDO_PASSWORD) -f disk/Dockerfile.builder -o disk/out/linux/amd64 .
+	docker buildx build --build-arg "ARCH=arm64" --build-arg PACKER_GITHUB_API_TOKEN=$(PACKER_GITHUB_API_TOKEN) --build-arg KUBERNETES_VERSION=$(KUBERNETES_VERSION) --build-arg SUDO_PASSWORD=$(CAPCH_DISK_SUDO_PASSWORD) -f disk/Dockerfile.builder -o disk/out/linux/arm64 .
 
 	docker buildx build --platform linux/amd64,linux/arm64 -f disk/Dockerfile --push -t $(CAPCH_DISK_IMAGE) .
 	docker buildx build --platform linux/amd64,linux/arm64 -f disk/Dockerfile.cdi --push -t $(CAPCH_DISK_CDI_IMAGE) .

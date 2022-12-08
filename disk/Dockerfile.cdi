@@ -1,5 +1,5 @@
-FROM kubevirt/container-disk-v1alpha
+FROM alpine:3.16
 
 COPY disk/out /tmp/
 
-RUN cp /tmp/$(uname -m)/disk.img /disk/disk.qcow2 && rm -rf /tmp
+RUN mkdir /disk && cp /tmp/$(uname -m)/disk.img /disk/disk.qcow2 && rm -rf /tmp

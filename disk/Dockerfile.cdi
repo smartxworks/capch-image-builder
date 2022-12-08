@@ -1,5 +1,5 @@
 FROM kubevirt/container-disk-v1alpha
 
-COPY disk/out /tmp/
+ARG TARGETPLATFORM
 
-RUN cp /tmp/$(uname -m)/disk.img /disk/disk.qcow2 && rm -rf /tmp
+COPY disk/out/${TARGETPLATFORM}/disk.img /disk/disk.qcow2

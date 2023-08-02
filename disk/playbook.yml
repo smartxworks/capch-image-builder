@@ -93,6 +93,61 @@
         name: skopeo
         state: present
 
+    - name: Install GNUPG
+      apt:
+        name: gnupg
+        state: present
+    
+    - name: Install curl
+      apt:
+        name: curl
+        state: present
+    
+    - name: Install chrony
+      apt:
+        name: chrony
+        state: present
+
+    - name: Install vim 
+      apt:
+        name: vim
+        state: present
+
+    - name: Install net-tools 
+      apt:
+        name: net-tools
+        state: present
+
+    - name: Install dnsutils 
+      apt:
+        name: dnsutils
+        state: present
+
+    - name: Install conntrack 
+      apt:
+        name: conntrack
+        state: present
+
+    - name: Install socat 
+      apt:
+        name: socat
+        state: present
+
+    - name: Install nftables 
+      apt:
+        name: nftables
+        state: present
+
+    - name: Install xfsprogs 
+      apt:
+        name: xfsprogs
+        state: present
+
+    - name: Enable nftables at boot
+      systemd:
+        name: nftables
+        enabled: yes
+
     - name: Create Kubernetes container image directory
       file:
         path: /usr/share/capch/images
